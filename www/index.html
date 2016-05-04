@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+        <link rel="stylesheet" type="text/css" href="css/css.css" />
+        <link rel="stylesheet" type="text/css" href="css/fonts.css" />
+        <link rel="stylesheet" type="text/css" href="css/responsive.css" />
+        <link href="scripts/carousel/carousel.css" rel="stylesheet">
+        <title>PMC</title>
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
+   		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+		<script type="text/javascript" charset="utf-8">   
+			function onDeviceReady(){
+				updateMedia();
+			}
+		   
+			function checkConnection() {
+		        var networkState = navigator.network.connection.type;
+		
+		        var states = {};
+		        states[Connection.UNKNOWN]  = 'Unknown connection';
+		        states[Connection.ETHERNET] = 'Ethernet connection';
+		        states[Connection.WIFI]     = 'WiFi connection';
+		        states[Connection.CELL_2G]  = 'Cell 2G connection';
+		        states[Connection.CELL_3G]  = 'Cell 3G connection';
+		        states[Connection.CELL_4G]  = 'Cell 4G connection';
+		        states[Connection.NONE]     = 'No network connection';
+		
+		        if (states[networkState] != 'No network connection')
+		        {
+		        	//alert("Good");
+		        }
+		        else
+		        {
+		        	alert("No Network Connection. Open Downloads?");
+		        	
+		        	setTimeout(function(){
+			        	$(".playlists-item").click();
+			        	
+			        	setTimeout(function(){
+			        		$("#download").click();
+			        		
+			        		console.log('listing');
+					        
+							mp3Folder = "Music/Persian music channel";
+						    result = document.querySelector("#results");
+						
+						    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + mp3Folder,
+						    function(dirEntry) {
+						            
+								// Get a directory reader
+								var directoryReader = dirEntry.createReader();
+								
+								// Get a list of all the entries in the directory
+								directoryReader.readEntries(success,fail);
+						
+								function cut_mp3(string){
+									var tm=string;
+									string = string.toLowerCase();
+									var str= string.search(".mp3");
+									string =tm.substring(0,str);
+									return string;
+								}
+						
+								function success(entries) {
+								    var i;
+								    if(entries.length > 0){
+								         result.innerHTML ='';
+								    for (i=0; i<entries.length; i++) {
+								    	var song = cut_mp3(entries[i].name);
+										song = song.replace('.mp3','');
+										var song_details = song.split("=");
+								    	
+                                        result.innerHTML += '<div class="downloaded-song"><div class="caption" onclick="updateMedia(\''+cut_mp3(entries[i].name)+'\',\''+song_details[2]+'\')">Delete</div></div>';
+                                        /*
+                                            result.innerHTML += '<div class="downloaded-song fff'+song_details[2]+'"><div class="caption" onclick="updateMedia(\''+cut_mp3(entries[i].name)+'\',\''+song_details[2]+'\')">'+song_details[1]+'delete'+'<br/><span>'+song_details[0]+'</span></div></div>';
+                   
+                                        */
+								    }
+								    }else{
+								
+								       result.innerHTML = '<p class="empty_playlist" >'+"Folder is empty!"+"</p>";
+								    }
+								}
+						
+								function fail(error) {
+								    result.innerHTML = '<p class="empty_playlist" >'+"Are you sure that such folder exists?!"+"</p>";
+								}
+						    }); 
+			        		
+			        	});
+		        	},1000);
+		        }
+		    }
+ 		</script>
+ 
+    </head>
+     <body onload="checkConnection();">
+    	<div id="app">
+    		<div class="bar"></div>
+    		<div id="menu">
+    			<a class="tab-item home-item active">
+    				<div class="logo">
+    					<img src="img/pmc.png" />
+    				</div>
+    			</a>
+    			<a class="tab-item">
+    				<span class="search-icon">
+    					<img src="img/search-icon.png" />
+    					<span class="fullname"></span>
+					</span>
+    			</a>
+    			<a class="tab-item video-item">
+    				<span class="videos-icon tab-margin tab-pad">
+    					<img src="img/videos-icon.png" />
+    					<p>Videos</p>
+    				</span>
+    			</a>
+    			<a class="tab-item track-item">
+    				<span class="mp3-icon tab-margin tab-pad">
+	    				<img src="img/mp3-icon.png" />
+	    				<p>Mp3</p>
+	    			</span>
+    			</a>
+    			<a class="tab-item">
+    				<span class="charts-icon tab-margin tab-pad">
+	    				<img src="img/charts-icon.png" />
+	    				<p>Charts</p>
+    				</span>
+    			</a>
+    			<a class="tab-item">
+    				<span class="pmc-icon tab-margin tab-pad">
+	    				<img src="img/pmc-icon.png" />
+	    				<p>PMC</p>
+    				</span>
+    			</a>
+    			<a class="tab-item playlists-item">
+    				<span class="playlist-icon tab-margin tab-pad">
+	    				<img src="img/playlist-icon.png" />
+	    				<p>Playlists</p>
+    				</span>
+    			</a>
+    			<a class="tab-item scanner-icon" id="qrscan">
+    				<span class="pmc-icon tab-margin tab-pad">
+	    				<img src="img/scanner-icon.png" />
+	    				<p>Scanner</p>
+    				</span>
+    			</a>
+    			<a class="tab-item">
+    				<span class="settings-icon tab-pad">
+	    				<img src="img/settings-icon.png" />
+	    				<p>Settings</p>
+    				</span>
+    			</a>
+    			
+    			<!--
+    			<a class="tab-item" id='download'>
+    				<span class="pmc-icon tab-margin tab-pad">
+	    				<img src="img/pmc-icon.png" />
+	    				<p>Download</p>
+    				</span>
+    			</a>
+    			<a class="tab-item" id='download'>
+    				<span class="pmc-icon tab-margin tab-pad">
+	    				<img src="img/pmc-icon.png" />
+	    				<p>Mp3 Play</p>
+    				</span>
+    			</a>-->
+    			
+    			<div class="burger-menu"></div>
+    		</div>
+    		<div id="pages">
+    			<div class="tab-content" id="home">
+    				
+    				<div class="posted-data"></div>
+    				
+    			</div>
+    			<div class="tab-content" id="search">
+    				<div class="inside-search">
+	    				<div class="section">
+	    					<a class="close-search">Close</a>
+	    				</div>
+	    				<div class="section">
+	    					<form autocomplete="off">
+	    						<input class="search-input" type="text" name="search" placeholder="Search for Music, Video or Artist"/>
+	    					</form>
+	    				</div>
+	    				<div class="section search-results"></div>
+    				</div>
+    			</div>
+				<div class="tab-content" id="videos" data-post="http://pmc.tv/tablet-app/videos.html">
+    				
+    				<div class="posted-data"></div>
+    				
+    			</div>
+    			<div class="tab-content" id="tracks" data-post="http://pmc.tv/tablet-app/tracks.html">
+    				
+    				<div class="posted-data"></div>
+    				
+    			</div>
+				<div class="tab-content" id="charts" data-post="http://pmc.tv/tablet-app/charts.html">
+    				<div class="chart-tab-items chart-tab-when section">
+    					<div class="section-tab-item active" data-info="this">This Week</div>
+    					<div class="section-tab-item" data-info="last">This Month</div>
+    				</div>
+    				
+    				<div class="chart-tab-items chart-tab-what section">
+    					<div class="section-tab-item active" data-info="top-20">PMC Top 20</div>
+    					<div class="section-tab-item" data-info="viewed">Most Viewed</div>
+    					<div class="section-tab-item" data-info="played">Most Played</div>
+    					<div class="section-tab-item" data-info="downloads">Top Downloads</div>
+    					<div class="section-tab-item" data-info="liked">Top Likes</div>
+    				</div>
+    				
+    				<div class="posted-data"></div>
+    				
+    			</div>
+    			<div class="tab-content" id="pmc" data-post="http://pmc.tv/tablet-app/pmc.html">
+    				
+    				<div class="posted-data"></div>
+    				
+    			</div>
+    			<div class="tab-content" id="playlists">
+    				
+    				<div class="playlists-tab-items section">
+    					<div class="section-tab-item active" data-post="http://pmc.tv/tablet-app/pmc-royale.html">PMC Royale</div>
+    					<div class="section-tab-item" data-post="http://pmc.tv/tablet-app/my-playlist-tracks.html">My Playlist</div>
+    					<div class="section-tab-item" id="download">Downloads</div>
+    					<div class="section-tab-item" data-post="http://pmc.tv/tablet-app/tablet-playlist.html">PMC Playlist</div>
+    				</div>
+    				
+    				<div class="playlists-tab-contents section">
+    					<div class="section-tab-content">
+    						<div class="posted-data" id="royale">
+    							<div class="section loading"><img src="img/load.gif" /></div>
+    						</div>
+    					</div>
+    					<div class="section-tab-content myplaylist-section">
+    						<div class="posted-data">
+								<div class="section loading"><img src="img/load.gif" /></div>
+							</div>
+    					</div>
+    					<div class="section-tab-content">
+    						<div id="results">
+    							<p class="empty_playlist list-empty">Download list is currently empty.</p>
+    							<!--<p class="empty_playlist offline-music" id="download"><br/>Click here to refresh Downloaded Mp3's while offline</p>-->
+    						</div>
+    					</div>
+    					<div class="section-tab-content playlist-section">
+    						<div class="posted-data">
+    							<div class="section loading"><img src="img/load.gif" /></div>
+    						</div>
+    					</div>
+    				</div>
+    			</div>
+                   
+                <div class="tab-content" id="qr">
+                	<div class="inside-search">
+	                	<div class="section">
+		    				<a class="close-search close-qr">Close</a>
+		    			</div>
+		    			<div id="status">
+		    				<!--<p class="empty_playlist">Track downloaded successfully.<br/><br/><span class="go-to-downloads">Go to my Downloads</span></p>-->
+	                	</div>
+	    			</div>
+                </div>
+                
+                <div class="tab-content" id="settings">
+    				
+    				<div class="settings-tab-items section">
+    					<div class="section-tab-item active">Playback Options</div>
+    					<div class="section-tab-item">About PMC</div>
+    					<div class="section-tab-item">Contact</div>
+    				</div>
+    				
+    				<div class="settings-tab-contents">
+    					
+    					
+    					<div class="section-tab-content">
+    						<div class="setting">
+    							<div class="setting-item" data-info="quality">
+    								<span>Streaming Quality</span>
+    								<a class="options" style="display:block;">Opt</a>
+    								<div class="opt-dropdown quality-info">
+    									<a data-info="480" class="active">480p</a>
+    									<a data-info="720">720p</a>
+    									<a data-info="1080">1080p</a>
+    								</div>
+    							</div>
+    						</div>
+    					</div>
+    					<div class="section-tab-content">
+    						<div class="about-pmc">
+    							<img src="img/pmc.png" />
+    							<p>Launched on the 9th of May 2003, PMC has the passion and vision necessary to give Iranian youth a new voice. PMC is at the forefront of Iranian media and continues to expand its boundaries in content as well as coverage. PMC has remained a cornerstone in Iranian entertainment media for close to a decade now.</p>
+								<p>With round-the-clock programming and a playlist that encompasses several popular musical genres, and unique blend of Persian, Arabic, and Western, PMC MUSIC has been able extend its reach to an ever-expanding fan base. It’s cutting edge style has rapidly made it the most popular television channel in Iran.</p>
+								<p>PMC represents an exciting new era in entertainment for Iranian youth. PMC is the first free-to-air satellite TV channel that directly and dynamically responds to the current needs of the younger generation of Iran.</p>
+								<p>PMC broadcasts on the Hot-bird satellite for Iran, Middle East, North Africa and Europe. Latest research estimates indicate that PMC is available on 11 million receivers in Iran alone.<br/>With an international outreach, spanning the Middle East and Europe, regardless of where you are, PMC remains the channel to tune into to access the best in Iranian music programming.</p>
+    						</div>
+    					</div>
+    					<div class="section-tab-content">
+    						<div class="about-pmc">
+								<p>ADDRESS:<br/>DUBAI STUDIO CITY<br/>BOUTIQUE STUDIO 1</p>
+								<p>T: +971 4 391 3288<br/>F: +971 4 391 2111<br/>E: info@pmc.tv<br/></p>
+								<p>ADVERTISING:<br/>ADVERTISE@PMC.TV<br/>+971 50 844 9889</p>
+								<p>VIDEO CLIPS:<br/>CLIPS@PMC.TV<br/>+44 7 707 999 094</p>
+    						</div>
+    					</div>
+    				</div>
+    				
+    			</div>
+
+    			<div class="ajax_page" style="display: none;">
+    			</div>
+    			
+    			<div class="loginemail_page setting_page" style="display: none;">
+    				
+    				<form id="log-in">
+    					<input class="input" type="text" name="email" placeholder="Email" />
+    					<input class="input" type="password" name="password" placeholder="Password" />
+    					<input type="submit" name="submit" class="submit" value="Sign In" />
+    				</form>
+    				
+    			</div>
+    			
+    			<div class="loginfb_page setting_page" style="display: none;">
+    				<iframe src="http://pmc.tv/loginregister.html" style="width: 500px; height: 600px;"></iframe>
+    			</div>
+    			
+    			<div class="signup_page setting_page" style="display: none;">    				
+    				<form id="sign-up">
+    					<h1>Register</h1>
+    					<div class="errors section" style="display: none;"></div>
+    					<input class="input" type="text" name="fullname" placeholder="Full Name" />
+    					<input class="input" type="text" name="email" placeholder="Email Address" />
+    					<input class="input" type="password" name="password" placeholder="Password"/>
+    					<input class="input" type="password" name="cpassword" placeholder="Confirm Password" />
+    					<input type="submit" name="submit" class="submit" />
+    				</form>
+    			</div>
+    			
+    		</div> <!-- PAGES -->
+    		<div class="button-options">
+				<span></span>
+				<div class="btns">
+					<button id="play" onclick="playAudio()"></button>
+					<button id="stop" onclick="stopAudio()"></button>
+					<span class="add-icon">Add</span>
+				</div>
+			</div>
+    	
+    	</div> <!-- APP -->
+ 
+ 	  	<script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="scripts/carousel/carousel.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script src="js/jquery.lazyload.js?v=1.9.1"></script>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="barcodescanner.js"></script>
+        <script type="text/javascript" src="js/qr.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+    </body>
+</html>
